@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول - مطعم ومبي</title>
+    <link rel="icon" type="image/png" href="images/logo.png">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/notifications.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .login-page {
+            margin-top: 4rem;
+            padding: 2rem 0;
+            min-height: calc(100vh - 4rem);
+            background: linear-gradient(135deg, #f0f8f0 0%, #e8f5e8 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-container {
+            background: #fff;
+            border-radius: 1.5rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            width: 100%;
+            max-width: 28rem;
+        }
+
+        .auth-toggle {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            background: #f0f8f0;
+            padding: 0.5rem;
+            border-radius: 1rem;
+        }
+
+        .toggle-btn {
+            padding: 0.75rem;
+            border: none;
+            background: transparent;
+            color: #2c5530;
+            font-weight: 600;
+            font-size: 0.95rem;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .toggle-btn.active {
+            background: #2c5530;
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(44, 85, 48, 0.3);
+        }
+
+        .auth-section {
+            display: none;
+        }
+
+        .auth-section.active {
+            display: block;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-header h2 {
+            font-size: 1.75rem;
+            color: #2c5530;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-header p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #2c5530;
+            font-size: 0.9rem;
+        }
+
+        .form-group label .optional {
+            color: #999;
+            font-weight: 400;
+            font-size: 0.85rem;
+        }
+
+        .form-group input {
+            padding: 0.85rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 0.75rem;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #2c5530;
+            box-shadow: 0 0 0 3px rgba(44, 85, 48, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .submit-btn {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #2c5530;
+            color: #fff;
+            border: none;
+            border-radius: 0.75rem;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .submit-btn:hover {
+            background: #1e3a21;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(44, 85, 48, 0.3);
+        }
+
+        .login-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .login-footer a {
+            color: #2c5530;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .login-footer a:hover {
+            color: #1e3a21;
+        }
+
+        @media (max-width: 48rem) {
+            .login-container {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+
+            .login-header h2 {
+                font-size: 1.5rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .toggle-btn {
+                font-size: 0.85rem;
+                padding: 0.65rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="container">
+                <a href="index.html" class="nav-brand">
+                    <img src="images/logo.png" alt="مطعم ومبي" class="logo">
+                    <h1 class="brand-name">مطعم ومبي</h1>
+                </a>
+                <ul class="nav-menu">
+                    <li><a href="index.html" class="nav-link"><i class="fas fa-home"></i> الرئيسية</a></li>
+                    <li><a href="menu.html" class="nav-link"><i class="fas fa-utensils"></i> المنيو</a></li>
+                    <li><a href="cart.html" class="nav-link"><i class="fas fa-shopping-cart"></i> سلة المشتريات</a></li>
+                    <li><a href="login.html" class="nav-link active"><i class="fas fa-user"></i> حسابي</a></li>
+                </ul>
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="login-page">
+        <div class="login-container">
+            <!-- Account Info (shown when logged in) -->
+            <div id="account-section" class="auth-section" style="display: none;">
+                <div class="login-header">
+                    <h2>حسابي</h2>
+                    <p id="user-welcome">مرحباً بك!</p>
+                </div>
+
+                <!-- Last Order Info -->
+                <div id="last-order-info"
+                    style="background: #f0f8f0; padding: 1.5rem; border-radius: 1rem; margin-bottom: 1.5rem; display: none;">
+                    <h3 style="color: #2c5530; margin-bottom: 1rem; font-size: 1.1rem;">
+                        <i class="fas fa-check-circle"></i> آخر طلب
+                    </h3>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.95rem;">
+                        <div><strong>رقم الطلب:</strong> <span id="order-number">-</span></div>
+                        <div><strong>الإجمالي:</strong> <span id="order-total">-</span> جنيه</div>
+                        <div><strong>الوقت:</strong> <span id="order-time">-</span></div>
+                    </div>
+                </div>
+
+                <button type="button" class="submit-btn" onclick="logoutUser()" style="background: #d32f2f;">
+                    <i class="fas fa-sign-out-alt"></i>
+                    تسجيل الخروج
+                </button>
+            </div>
+
+            <!-- Toggle Buttons -->
+            <div class="auth-toggle" id="auth-toggle">
+                <button type="button" class="toggle-btn active" data-mode="login">
+                    <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
+                </button>
+                <button type="button" class="toggle-btn" data-mode="register">
+                    <i class="fas fa-user-plus"></i> حساب جديد
+                </button>
+            </div>
+
+            <!-- Login Form -->
+            <div id="login-section" class="auth-section active">
+                <div class="login-header">
+                    <h2>تسجيل الدخول</h2>
+                    <p>أدخل رقم هاتفك للدخول</p>
+                </div>
+
+                <form class="login-form" id="login-form">
+                    <div class="form-group">
+                        <label for="login-phone">رقم الهاتف</label>
+                        <input type="tel" id="login-phone" placeholder="01234567890" required>
+                    </div>
+
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-sign-in-alt"></i>
+                        دخول
+                    </button>
+                </form>
+            </div>
+
+            <!-- Register Form -->
+            <div id="register-section" class="auth-section">
+                <div class="login-header">
+                    <h2>إنشاء حساب جديد</h2>
+                    <p>أدخل بياناتك للتسجيل</p>
+                </div>
+
+                <form class="login-form" id="register-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="first-name">الاسم الأول</label>
+                            <input type="text" id="first-name" placeholder="أحمد" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="last-name">الاسم الأخير</label>
+                            <input type="text" id="last-name" placeholder="محمد" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">رقم الهاتف</label>
+                        <input type="tel" id="phone" placeholder="01234567890" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">البريد الإلكتروني <span class="optional">(اختياري)</span></label>
+                        <input type="email" id="email" placeholder="example@email.com">
+                    </div>
+
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-user-plus"></i>
+                        إنشاء حساب
+                    </button>
+                </form>
+            </div>
+
+            <div class="login-footer">
+                <p><a href="menu.html">تصفح المنيو </a></p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2025 مطعم ومبي. جميع الحقوق محفوظة.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/notifications.js"></script>
+    <script src="js/script.js"></script>
+    <script src="js/login.js"></script>
+</body>
+
+</html>

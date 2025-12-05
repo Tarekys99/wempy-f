@@ -1,0 +1,6 @@
+C:/Users/hp/miniconda3/Scripts/activate
+conda activate fullapp_rag
+
+المطلوب لكل قسم للمنتجات:
+
+قسم الاطباق و العب ان 
