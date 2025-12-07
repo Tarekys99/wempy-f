@@ -180,6 +180,98 @@
   color: #2c5530;
 }
 
+/* Plain Option - Checkbox for "سادة" */
+.plain-option {
+  margin: 0.3rem 0;
+}
+
+.plain-option label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.45rem;
+  background: #fff8e1;
+  border-radius: 0.35rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.75rem;
+  border: 1.5px solid #ffd54f;
+}
+
+.plain-option label:hover {
+  background: #fff3cd;
+  border-color: #ffc107;
+}
+
+.plain-option input[type="checkbox"] {
+  cursor: pointer;
+  width: 0.85rem;
+  height: 0.85rem;
+  accent-color: #ffc107;
+}
+
+.plain-option label:has(input[type="checkbox"]:checked) {
+  background: #fff3cd;
+  border-color: #ffc107;
+  font-weight: 600;
+  color: #f57c00;
+}
+
+/* Custom Order Label - Radio with Input for "حسب الطلب" */
+.options-group label.custom-order-label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.45rem;
+  background: #e3f2fd;
+  border: 1.5px solid #64b5f6;
+  cursor: pointer;
+}
+
+.options-group label.custom-order-label:hover {
+  background: #bbdefb;
+  border-color: #1976d2;
+}
+
+.options-group label.custom-order-label:has(input[type="radio"]:checked) {
+  background: #bbdefb;
+  border-color: #1976d2;
+  font-weight: 600;
+  color: #1976d2;
+}
+
+.options-group label.custom-order-label span {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #1976d2;
+  white-space: nowrap;
+}
+
+.options-group label.custom-order-label input.custom-price-input {
+  flex: 1;
+  padding: 0.25rem 0.35rem;
+  border: 1px solid #90caf9;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  text-align: center;
+  background: #fff;
+  color: #1976d2;
+  font-weight: 600;
+  min-width: 0;
+  cursor: text;
+}
+
+.options-group label.custom-order-label input.custom-price-input:focus {
+  outline: none;
+  border-color: #1976d2;
+  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1);
+}
+
+.options-group label.custom-order-label input.custom-price-input::placeholder {
+  color: #90caf9;
+  font-weight: 400;
+}
+
 .controls {
   margin-top: 0.2rem;
   justify-content: space-between;
@@ -350,6 +442,24 @@
     padding: 0.6rem;
   }
 
+  .plain-option label {
+    font-size: 0.9rem;
+    padding: 0.6rem;
+  }
+
+  .options-group label.custom-order-label {
+    padding: 0.6rem;
+  }
+
+  .options-group label.custom-order-label span {
+    font-size: 0.9rem;
+  }
+
+  .options-group label.custom-order-label input.custom-price-input {
+    padding: 0.4rem 0.5rem;
+    font-size: 0.9rem;
+  }
+
   .cart-summary {
     left: 2rem;
     right: 2rem;
@@ -425,6 +535,24 @@
   .options-group label {
     font-size: 0.95rem;
     padding: 0.65rem;
+  }
+
+  .plain-option label {
+    font-size: 0.95rem;
+    padding: 0.65rem;
+  }
+
+  .options-group label.custom-order-label {
+    padding: 0.65rem;
+  }
+
+  .options-group label.custom-order-label span {
+    font-size: 0.95rem;
+  }
+
+  .options-group label.custom-order-label input.custom-price-input {
+    padding: 0.45rem 0.55rem;
+    font-size: 0.95rem;
   }
 
   .cart-summary .container {

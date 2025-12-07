@@ -379,10 +379,19 @@ async function submitOrder() {
       ShiftID: shiftId,
       OrderNotes: customer.notes,
       ExternalNotes: customer.externalItems,
-      items: cart.map(item => ({
-        VariantID: item.variantId,
-        Quantity: item.qty
-      }))
+      items: cart.map(item => {
+        const orderItem = {
+          VariantID: item.variantId,
+          Quantity: item.qty
+        };
+
+        // Add CustomPrice only if it exists
+        if (item.customPrice) {
+          orderItem.CustomPrice = item.customPrice;
+        }
+
+        return orderItem;
+      })
     };
 
     console.log('Sending order:', orderPayload);

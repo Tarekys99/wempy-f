@@ -113,23 +113,73 @@ function createCard(item, category, allVariants = []) {
           `;
         });
         optionsHtml += '</div>';
+
+        // Add "سادة" checkbox for sandwiches
+        optionsHtml += `
+          <div class="plain-option">
+            <label>
+              <input type="checkbox" name="plain-${item.ProductID}" id="plain-${item.ProductID}">
+              سادة
+            </label>
+          </div>
+        `;
+
         defaultPrice = nonDefaultTypes[0].Price;
       } else if (nonDefaultSizes.length > 1) {
-        // Multiple sizes - show size options
-        optionsHtml = '<div class="options-group">';
-        nonDefaultSizes.forEach((variant, index) => {
-          optionsHtml += `
-            <label>
-              <input type="radio" name="option-${item.ProductID}" value="${variant.VariantID}" data-price="${variant.Price}" ${index === 0 ? 'checked' : ''}>
-              ${variant.sizes.SizeName} - ${parseFloat(variant.Price).toFixed(2)} جنيه
-            </label>
-          `;
-        });
-        optionsHtml += '</div>';
-        defaultPrice = nonDefaultSizes[0].Price;
+        // Multiple sizes - show size options (exclude "حسب الطلب" option)
+        const sizesWithoutCustom = nonDefaultSizes.filter(v => !v.sizes.SizeName.includes('حسب الطلب'));
+
+        if (sizesWithoutCustom.length > 0) {
+          optionsHtml = '<div class="options-group">';
+          sizesWithoutCustom.forEach((variant, index) => {
+            optionsHtml += `
+              <label>
+                <input type="radio" name="option-${item.ProductID}" value="${variant.VariantID}" data-price="${variant.Price}" ${index === 0 ? 'checked' : ''}>
+                ${variant.sizes.SizeName} - ${parseFloat(variant.Price).toFixed(2)} جنيه
+              </label>
+            `;
+          });
+          optionsHtml += '</div>';
+          defaultPrice = sizesWithoutCustom[0].Price;
+        } else {
+          // Only "حسب الطلب" size exists - will be handled below
+          defaultPrice = nonDefaultSizes[0].Price;
+        }
       } else {
         // Single variant - just show price
         defaultPrice = variants[0].Price;
+      }
+
+      // Add "حسب الطلب" radio option for variants with VariantID between 132 and 146
+      const customOrderVariant = variants.find(v => v.VariantID >= 132 && v.VariantID <= 146);
+      if (customOrderVariant) {
+        // If no options group exists yet, create one
+        if (optionsHtml === '') {
+          optionsHtml = '<div class="options-group">';
+          // Find a non-custom variant to show as default option
+          const regularVariant = variants.find(v => !v.sizes.SizeName.includes('حسب الطلب'));
+          if (regularVariant) {
+            optionsHtml += `
+              <label>
+                <input type="radio" name="option-${item.ProductID}" value="${regularVariant.VariantID}" data-price="${regularVariant.Price}" checked>
+                ${regularVariant.sizes.SizeName === 'افتراضي' ? 'عادي' : regularVariant.sizes.SizeName} - ${parseFloat(regularVariant.Price).toFixed(2)} جنيه
+              </label>
+            `;
+          }
+          optionsHtml += '</div>';
+        }
+
+        // Add custom order as a radio option within the options group
+        if (optionsHtml.includes('</div>')) {
+          // Insert before closing div
+          optionsHtml = optionsHtml.replace('</div>', `
+            <label class="custom-order-label">
+              <input type="radio" name="option-${item.ProductID}" value="custom-${customOrderVariant.VariantID}" data-price="10" data-is-custom="true">
+              <span>حسب الطلب:</span>
+              <input type="number" class="custom-price-input" data-product-id="${item.ProductID}" min="10" placeholder="بكام تريد" onclick="event.stopPropagation()">
+            </label>
+          </div>`);
+        }
       }
     }
 
@@ -155,13 +205,55 @@ function createCard(item, category, allVariants = []) {
     const value = card.querySelector('.value');
     const addBtn = card.querySelector('.add-btn');
     const priceEl = card.querySelector('.price');
+    const customPriceInput = card.querySelector('.custom-price-input');
+    const sizeRadios = card.querySelectorAll('input[type="radio"][name^="option-"]');
+    const customRadio = card.querySelector('input[type="radio"][data-is-custom="true"]');
 
-    // Update price when type changes
-    card.querySelectorAll('input[type="radio"]').forEach(radio => {
+    // Update price when size/type changes
+    sizeRadios.forEach(radio => {
       radio.addEventListener('change', (e) => {
-        priceEl.textContent = `${parseFloat(e.target.dataset.price).toFixed(2)} جنيه`;
+        if (e.target.dataset.isCustom === 'true') {
+          // Custom order selected - focus on input
+          if (customPriceInput) {
+            customPriceInput.focus();
+            const customValue = parseFloat(customPriceInput.value);
+            if (customValue && customValue >= 10) {
+              priceEl.textContent = `${customValue.toFixed(2)} جنيه`;
+            } else {
+              priceEl.textContent = '10.00 جنيه (الحد الأدنى)';
+            }
+          }
+        } else {
+          // Regular size selected
+          priceEl.textContent = `${parseFloat(e.target.dataset.price).toFixed(2)} جنيه`;
+          if (customPriceInput) {
+            customPriceInput.value = '';
+          }
+        }
       });
     });
+
+    // When custom price input is filled, select custom radio and update price
+    if (customPriceInput) {
+      customPriceInput.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (customRadio) {
+          customRadio.checked = true;
+        }
+      });
+
+      customPriceInput.addEventListener('input', (e) => {
+        if (customRadio) {
+          customRadio.checked = true;
+        }
+        const customValue = parseFloat(e.target.value);
+        if (customValue && customValue >= 10) {
+          priceEl.textContent = `${customValue.toFixed(2)} جنيه`;
+        } else if (e.target.value) {
+          priceEl.textContent = '10.00 جنيه (الحد الأدنى)';
+        }
+      });
+    }
 
     let qty = 1;
     minus.addEventListener('click', () => { qty = Math.max(1, qty - 1); value.textContent = String(qty); });
@@ -175,42 +267,105 @@ function createCard(item, category, allVariants = []) {
 
       const cart = readCart();
 
-      // Get selected variant
-      let selectedVariant = variants[0]; // Default to first variant
+      // Get selected radio
       const selectedRadio = card.querySelector('input[type="radio"]:checked');
-      if (selectedRadio) {
+      if (!selectedRadio) {
+        Toast.warning("الرجاء اختيار الحجم أولاً");
+        return;
+      }
+
+      // Check if custom order is selected
+      const isCustomOrder = selectedRadio.dataset.isCustom === 'true';
+      let customPrice = null;
+      let selectedVariant = variants[0];
+
+      if (isCustomOrder) {
+        // Get custom price from input
+        const customPriceInput = card.querySelector('.custom-price-input');
+        if (!customPriceInput || !customPriceInput.value) {
+          Toast.warning("الرجاء إدخال السعر المطلوب");
+          return;
+        }
+        customPrice = parseFloat(customPriceInput.value);
+        if (customPrice < 10) {
+          Toast.warning("الحد الأدنى للسعر المخصص هو 10 جنيه");
+          return;
+        }
+        // Find custom order variant
+        const customOrderVariant = variants.find(v => v.VariantID >= 132 && v.VariantID <= 146);
+        if (customOrderVariant) {
+          selectedVariant = customOrderVariant;
+        }
+      } else {
+        // Regular size selected
         const variantId = parseInt(selectedRadio.value);
         selectedVariant = variants.find(v => v.VariantID === variantId) || variants[0];
       }
 
+      let finalPrice = isCustomOrder ? customPrice : parseFloat(selectedVariant.Price);
+
       // Build item name with size/type
       let itemName = item.Name;
-      if (selectedVariant.sizes.SizeName !== 'افتراضي') {
-        itemName += ` (${selectedVariant.sizes.SizeName})`;
-      }
-      if (selectedVariant.types.TypeName !== 'افتراضي') {
-        itemName += ` (${selectedVariant.types.TypeName})`;
+
+      if (isCustomOrder) {
+        // If custom order, don't show size, only show custom price
+        if (selectedVariant.types.TypeName !== 'افتراضي') {
+          itemName += ` (${selectedVariant.types.TypeName})`;
+        }
+        itemName += ` (حسب الطلب: ${customPrice} جنيه)`;
+      } else {
+        // Normal order, show size/type
+        if (selectedVariant.sizes.SizeName !== 'افتراضي') {
+          itemName += ` (${selectedVariant.sizes.SizeName})`;
+        }
+        if (selectedVariant.types.TypeName !== 'افتراضي') {
+          itemName += ` (${selectedVariant.types.TypeName})`;
+        }
       }
 
-      // Check if item already exists in cart
-      const existing = cart.find(i => i.variantId === selectedVariant.VariantID);
+      // Check if item already exists in cart (with same custom price)
+      const existing = cart.find(i => {
+        if (customPrice) {
+          return i.variantId === selectedVariant.VariantID && i.customPrice === customPrice;
+        }
+        return i.variantId === selectedVariant.VariantID && !i.customPrice;
+      });
+
       if (existing) {
         existing.qty += qty;
       } else {
-        cart.push({
+        const cartItem = {
           variantId: selectedVariant.VariantID,
           name: itemName,
-          unitPrice: parseFloat(selectedVariant.Price),
+          unitPrice: finalPrice,
           qty: qty,
           image: fullImageUrl,
           category: category
-        });
+        };
+
+        // Add customPrice only if it exists
+        if (customPrice) {
+          cartItem.customPrice = customPrice;
+        }
+
+        cart.push(cartItem);
       }
 
       writeCart(cart);
       const addedQty = qty;
       qty = 1;
       value.textContent = '1';
+
+      // Clear custom price input and reselect first size
+      const customPriceInput = card.querySelector('.custom-price-input');
+      if (customPriceInput) {
+        customPriceInput.value = '';
+      }
+      if (sizeRadios.length > 0) {
+        sizeRadios[0].checked = true;
+        priceEl.textContent = `${parseFloat(sizeRadios[0].dataset.price).toFixed(2)} جنيه`;
+      }
+
       Toast.success(`تمت إضافة ${addedQty}x ${itemName} إلى سلة المشتريات`);
     });
 
