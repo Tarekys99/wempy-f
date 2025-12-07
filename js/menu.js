@@ -269,13 +269,16 @@ function createCard(item, category, allVariants = []) {
 
       // Get selected radio
       const selectedRadio = card.querySelector('input[type="radio"]:checked');
-      if (!selectedRadio) {
+      const hasRadioOptions = card.querySelectorAll('input[type="radio"]').length > 0;
+
+      // Only show warning if there are radio options but none selected
+      if (hasRadioOptions && !selectedRadio) {
         Toast.warning("الرجاء اختيار الحجم أولاً");
         return;
       }
 
       // Check if custom order is selected
-      const isCustomOrder = selectedRadio.dataset.isCustom === 'true';
+      const isCustomOrder = selectedRadio ? selectedRadio.dataset.isCustom === 'true' : false;
       let customPrice = null;
       let selectedVariant = variants[0];
 
@@ -296,10 +299,13 @@ function createCard(item, category, allVariants = []) {
         if (customOrderVariant) {
           selectedVariant = customOrderVariant;
         }
-      } else {
+      } else if (selectedRadio) {
         // Regular size selected
         const variantId = parseInt(selectedRadio.value);
         selectedVariant = variants.find(v => v.VariantID === variantId) || variants[0];
+      } else {
+        // No radio selected - use default variant
+        selectedVariant = variants[0];
       }
 
       let finalPrice = isCustomOrder ? customPrice : parseFloat(selectedVariant.Price);
@@ -313,16 +319,16 @@ function createCard(item, category, allVariants = []) {
 
       if (isCustomOrder) {
         // If custom order, don't show size, only show custom price
-        if (selectedVariant.types.TypeName !== 'افتراضي') {
+        if (selectedVariant.types && selectedVariant.types.TypeName !== 'افتراضي') {
           itemName += ` (${selectedVariant.types.TypeName})`;
         }
         itemName += ` (حسب الطلب: ${customPrice} جنيه)`;
       } else {
         // Normal order, show size/type
-        if (selectedVariant.sizes.SizeName !== 'افتراضي') {
+        if (selectedVariant.sizes && selectedVariant.sizes.SizeName !== 'افتراضي') {
           itemName += ` (${selectedVariant.sizes.SizeName})`;
         }
-        if (selectedVariant.types.TypeName !== 'افتراضي') {
+        if (selectedVariant.types && selectedVariant.types.TypeName !== 'افتراضي') {
           itemName += ` (${selectedVariant.types.TypeName})`;
         }
       }
