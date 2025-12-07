@@ -382,7 +382,8 @@ async function submitOrder() {
       items: cart.map(item => {
         const orderItem = {
           VariantID: item.variantId,
-          Quantity: item.qty
+          Quantity: item.qty,
+          IsSada: item.isSada || false
         };
 
         // Add CustomPrice only if it exists

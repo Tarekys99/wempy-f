@@ -304,6 +304,10 @@ function createCard(item, category, allVariants = []) {
 
       let finalPrice = isCustomOrder ? customPrice : parseFloat(selectedVariant.Price);
 
+      // Check if "سادة" checkbox is checked (for sandwiches)
+      const plainCheckbox = card.querySelector(`input[type="checkbox"][name="plain-${item.ProductID}"]`);
+      const isSada = plainCheckbox ? plainCheckbox.checked : false;
+
       // Build item name with size/type
       let itemName = item.Name;
 
@@ -323,12 +327,17 @@ function createCard(item, category, allVariants = []) {
         }
       }
 
-      // Check if item already exists in cart (with same custom price)
+      // Add "سادة" to item name if checked
+      if (isSada) {
+        itemName += ' (سادة)';
+      }
+
+      // Check if item already exists in cart (with same custom price and isSada status)
       const existing = cart.find(i => {
         if (customPrice) {
-          return i.variantId === selectedVariant.VariantID && i.customPrice === customPrice;
+          return i.variantId === selectedVariant.VariantID && i.customPrice === customPrice && i.isSada === isSada;
         }
-        return i.variantId === selectedVariant.VariantID && !i.customPrice;
+        return i.variantId === selectedVariant.VariantID && !i.customPrice && i.isSada === isSada;
       });
 
       if (existing) {
@@ -340,7 +349,8 @@ function createCard(item, category, allVariants = []) {
           unitPrice: finalPrice,
           qty: qty,
           image: fullImageUrl,
-          category: category
+          category: category,
+          isSada: isSada
         };
 
         // Add customPrice only if it exists
@@ -364,6 +374,11 @@ function createCard(item, category, allVariants = []) {
       if (sizeRadios.length > 0) {
         sizeRadios[0].checked = true;
         priceEl.textContent = `${parseFloat(sizeRadios[0].dataset.price).toFixed(2)} جنيه`;
+      }
+
+      // Uncheck "سادة" checkbox
+      if (plainCheckbox) {
+        plainCheckbox.checked = false;
       }
 
       Toast.success(`تمت إضافة ${addedQty}x ${itemName} إلى سلة المشتريات`);
