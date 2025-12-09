@@ -116,6 +116,33 @@
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
     }
 
+    .delivery-notice {
+      background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+      border: 2px solid #ffc107;
+      border-radius: 0.75rem;
+      padding: 0.85rem 1rem;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      box-shadow: 0 2px 8px rgba(255, 193, 7, 0.2);
+    }
+
+    .delivery-notice i {
+      color: #f57c00;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+    }
+
+    .delivery-notice p {
+      color: #5d4037;
+      font-size: 0.85rem;
+      line-height: 1.5;
+      margin: 0;
+      font-weight: 500;
+    }
+
     .summary h3 {
       margin-bottom: 1rem;
       color: #2c5530;
@@ -355,6 +382,18 @@
         top: 6rem;
       }
 
+      .delivery-notice {
+        padding: 1rem 1.25rem;
+      }
+
+      .delivery-notice i {
+        font-size: 1.2rem;
+      }
+
+      .delivery-notice p {
+        font-size: 0.9rem;
+      }
+
       .form input,
       .form textarea,
       .form select {
@@ -437,6 +476,10 @@
         <div id="cart-items"></div>
       </section>
       <aside class="summary">
+        <div class="delivery-notice">
+          <i class="fas fa-info-circle"></i>
+          <p>ملاحظة: يتم تأخير وصول الأوردر يوم الجمعة بقدر نصف ساعة عن المعتاد نظراً للازدحام، وشكراً لصبركم</p>
+        </div>
         <h3>ملخص الطلب</h3>
         <table>
           <tr>
@@ -466,7 +509,8 @@
           </div>
           <input id="cust-phone2" placeholder="هاتف إضافي (اختياري)" />
           <input id="cust-building" placeholder="رقم المبنى/العمارة" />
-          <textarea id="cust-address" placeholder="الشارع والعنوان التفصيلي (يرجى تحديد رقم الدور)" rows="2" required></textarea>
+          <textarea id="cust-address" placeholder="الشارع والعنوان التفصيلي (يرجى تحديد رقم الدور)" rows="2"
+            required></textarea>
           <textarea id="cust-notes" placeholder="ملاحظات على الاوردر (اختياري)" rows="4"></textarea>
 
           <hr style="border: none; border-top: 2px solid #e0e0e0; margin: 1rem 0;">
