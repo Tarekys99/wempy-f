@@ -31,11 +31,12 @@
 
 .category-tabs {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.35rem;
   padding: 0;
   overflow-x: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  justify-content: space-between;
 }
 
 .category-tabs::-webkit-scrollbar {
@@ -43,7 +44,7 @@
 }
 
 .tab-btn {
-  padding: 0.75rem 1.25rem;
+  padding: 0.6rem 0.8rem;
   border-radius: 2rem;
   border: 2px solid #2c5530;
   background: transparent;
@@ -51,12 +52,15 @@
   font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
-  flex-shrink: 0;
-  font-size: 0.9rem;
+  flex-shrink: 1;
+  flex-grow: 1;
+  font-size: 0.8rem;
   transition: all 0.3s ease;
-  min-height: 2.75rem;
+  min-height: 2.5rem;
   display: flex;
   align-items: center;
+  justify-content: center;
+  min-width: 0;
 }
 
 .tab-btn.active,
