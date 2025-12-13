@@ -84,9 +84,7 @@ function createCard(item, category, allVariants = []) {
 
   if (isAPIProduct) {
     const imgPath = item.ImageUrl || '';
-    const fullImageUrl = imgPath ?
-      (imgPath.startsWith('http://') || imgPath.startsWith('https://') ?
-        imgPath : `${API_BASE_URL}/${imgPath}`) : '';
+    const fullImageUrl = imgPath ? `${API_BASE_URL}/${imgPath}` : '';
     const description = item.Description && item.Description !== 'لا وصف' ? item.Description : '';
 
     // Get variants for this product

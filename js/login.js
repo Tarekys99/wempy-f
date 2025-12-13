@@ -37,15 +37,15 @@ async function getUserOrders(userId) {
 
 // Save user session (UserID only)
 function saveUserSession(userID) {
-    // Save ONLY in sessionStorage (expires when tab closes)
-    sessionStorage.setItem(USER_SESSION_KEY, userID);
+    // Save in localStorage (persists even after browser closes)
+    localStorage.setItem(USER_SESSION_KEY, userID);
     console.log('User session saved:', userID);
 }
 
 // Get current user session
 function getUserSession() {
-    // Get from sessionStorage only
-    return sessionStorage.getItem(USER_SESSION_KEY);
+    // Get from localStorage (persistent)
+    return localStorage.getItem(USER_SESSION_KEY);
 }
 
 // Check if logged in
@@ -55,7 +55,7 @@ function isLoggedIn() {
 
 // Logout
 function logout() {
-    sessionStorage.removeItem(USER_SESSION_KEY);
+    localStorage.removeItem(USER_SESSION_KEY);
     window.location.href = 'login.html';
 }
 

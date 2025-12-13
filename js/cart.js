@@ -141,8 +141,8 @@ async function renderCartPage() {
 }
 
 function getUserId() {
-  // Get from sessionStorage only (expires when tab closes)
-  return sessionStorage.getItem('wempyUserID');
+  // Get from localStorage (persists even after browser closes)
+  return localStorage.getItem('wempyUserID');
 }
 
 async function getUserAddressesFromAPI(userId) {

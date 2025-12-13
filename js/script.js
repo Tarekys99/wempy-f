@@ -1,11 +1,11 @@
 // Check if user is logged in
 function isUserLoggedIn() {
-  return sessionStorage.getItem('wempyUserID');
+  return localStorage.getItem('wempyUserID');
 }
 
 // Logout function
 function logoutUser() {
-  sessionStorage.removeItem('wempyUserID');
+  localStorage.removeItem('wempyUserID');
   Toast.success('تم تسجيل الخروج بنجاح');
   setTimeout(() => window.location.href = 'login.html', 1000);
 }
